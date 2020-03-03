@@ -13,7 +13,7 @@ class RegressionToMulti(MultiModel):
     def __init__(self, *args, **kwargs):
         self.base_model = self._base_model_cls(*args, **kwargs)
 
-    def fit(self, G, B, T):
+    def fit(self, G, B, T, **kwargs):
         """ Fits the model
 
         :param G: numpy vector of shape :math:`n`
@@ -26,7 +26,7 @@ class RegressionToMulti(MultiModel):
         X = numpy.zeros((n, self._n_groups), dtype=numpy.bool)
         for i, group in enumerate(G):
             X[i, group] = 1
-        self.base_model.fit(X, B, T)
+        self.base_model.fit(X, B, T, **kwargs)
 
     def _get_x(self, group):
         x = numpy.zeros(self._n_groups)
