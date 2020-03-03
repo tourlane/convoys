@@ -3,6 +3,8 @@
 # This is fixed in latest autograd, but it's not on PyPI yet
 
 import scipy.misc
-if not hasattr(scipy.misc, 'logsumexp'):
+
+if not hasattr(scipy.misc, "logsumexp"):
     import scipy.special
+
     scipy.misc.logsumexp = scipy.special.logsumexp

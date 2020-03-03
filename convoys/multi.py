@@ -2,8 +2,7 @@ import numpy
 from convoys import regression
 from convoys import single
 
-__all__ = ['KaplanMeier', 'Exponential', 'Weibull', 'Gamma',
-           'GeneralizedGamma']
+__all__ = ["KaplanMeier", "Exponential", "Weibull", "Gamma", "GeneralizedGamma"]
 
 
 class MultiModel:
@@ -15,18 +14,18 @@ class RegressionToMulti(MultiModel):
         self.base_model = self._base_model_cls(*args, **kwargs)
 
     def fit(self, G, B, T):
-        ''' Fits the model
+        """ Fits the model
 
         :param G: numpy vector of shape :math:`n`
         :param B: numpy vector of shape :math:`n`
         :param T: numpy vector of shape :math:`n`
-        '''
+        """
         G = numpy.array(G, dtype=numpy.int)
-        n, = G.shape
+        (n,) = G.shape
         self._n_groups = max(G) + 1
         X = numpy.zeros((n, self._n_groups), dtype=numpy.bool)
         for i, group in enumerate(G):
-            X[i,group] = 1
+            X[i, group] = 1
         self.base_model.fit(X, B, T)
 
     def _get_x(self, group):
@@ -46,12 +45,12 @@ class SingleToMulti(MultiModel):
         self.base_model_init = lambda: self._base_model_cls(*args, **kwargs)
 
     def fit(self, G, B, T):
-        ''' Fits the model
+        """ Fits the model
 
         :param G: numpy vector of shape :math:`n`
         :param B: numpy vector of shape :math:`n`
         :param T: numpy vector of shape :math:`n`
-        '''
+        """
         group2bt = {}
         for g, b, t in zip(G, B, T):
             group2bt.setdefault(g, []).append((b, t))
@@ -65,25 +64,30 @@ class SingleToMulti(MultiModel):
 
 
 class Exponential(RegressionToMulti):
-    ''' Multi-group version of :class:`convoys.regression.Exponential`.'''
+    """ Multi-group version of :class:`convoys.regression.Exponential`."""
+
     _base_model_cls = regression.Exponential
 
 
 class Weibull(RegressionToMulti):
-    ''' Multi-group version of :class:`convoys.regression.Weibull`.'''
+    """ Multi-group version of :class:`convoys.regression.Weibull`."""
+
     _base_model_cls = regression.Weibull
 
 
 class Gamma(RegressionToMulti):
-    ''' Multi-group version of :class:`convoys.regression.Gamma`.'''
+    """ Multi-group version of :class:`convoys.regression.Gamma`."""
+
     _base_model_cls = regression.Gamma
 
 
 class GeneralizedGamma(RegressionToMulti):
-    ''' Multi-group version of :class:`convoys.regression.GeneralizedGamma`.'''
+    """ Multi-group version of :class:`convoys.regression.GeneralizedGamma`."""
+
     _base_model_cls = regression.GeneralizedGamma
 
 
 class KaplanMeier(SingleToMulti):
-    ''' Multi-group version of :class:`convoys.single.KaplanMeier`.'''
+    """ Multi-group version of :class:`convoys.single.KaplanMeier`."""
+
     _base_model_cls = single.KaplanMeier
