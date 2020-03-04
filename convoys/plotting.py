@@ -27,6 +27,7 @@ def plot_cohorts(
     groups=None,
     specific_groups=None,
     label_fmt="%(group)s (n=%(n).0f, k=%(k).0f)",
+    **kwargs,
 ):
     """ Helper function to fit data using a model and then plot the cohorts.
 
@@ -69,7 +70,7 @@ def plot_cohorts(
     if not isinstance(model, convoys.multi.MultiModel):
         # Fit model
         m = _models[model](ci=bool(ci))
-        m.fit(G, B, T)
+        m.fit(G, B, T, **kwargs)
     else:
         m = model
 
