@@ -290,21 +290,17 @@ class GeneralizedGamma(RegressionModel):
             for k, data in result.items()
         }
 
-    def cdf(self, x, t, ci=None):
-        """Returns the value of the cumulative distribution function
-        for a fitted model. TODO: this should probably be renamed
-        "predict" in the future to follow the scikit-learn convention.
+    def cdf_posteriori(self, x, t, ci=None):
+        '''Returns the value of the cumulative distribution function
+        for a fitted model.
 
         :param x: feature vector (or matrix)
         :param t: time
         :param ci: if this is provided, and the model was fit with
-            `ci = True`, then the return value will contain one more
-            dimension, and the last dimension will have size 3,
-            containing the mean, the lower bound of the confidence
-            interval, and the upper bound of the confidence interval.
-            If this is not provided, then the max a posteriori
-            prediction will be used.
-        """
+            `ci = True`, then the return value will be the trace
+            samples generated via the MCMC steps. If this is not
+            provided, then the max a posteriori prediction will be used.
+        '''
         x = numpy.array(x)
         t = numpy.array(t)
         if ci is None:
@@ -320,6 +316,24 @@ class GeneralizedGamma(RegressionModel):
             c = dot(x, params["beta"].T) + params["b"]
         M = c * gammainc(params["k"], (t * lambd) ** params["p"])
 
+        return M
+
+    def cdf(self, x, t, ci=None):
+        '''Returns the value of the cumulative distribution function
+        for a fitted model. TODO: this should probably be renamed
+        "predict" in the future to follow the scikit-learn convention.
+
+        :param x: feature vector (or matrix)
+        :param t: time
+        :param ci: if this is provided, and the model was fit with
+            `ci = True`, then the return value will contain one more
+            dimension, and the last dimension will have size 3,
+            containing the mean, the lower bound of the confidence
+            interval, and the upper bound of the confidence interval.
+            If this is not provided, then the max a posteriori
+            prediction will be used.
+        '''
+        M = self.cdf_posteriori(x, t, ci)
         if not ci:
             return M
         else:
